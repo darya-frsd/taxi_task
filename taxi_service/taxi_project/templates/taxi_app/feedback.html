@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<html lang="ru">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% load static %}
+<link rel="stylesheet" href="{% static 'styles/feedback.css' %}"/>
+<script>
+    function submitForm(event) {
+        event.preventDefault(); // Это предотвратит отправку формы
+        alert('Ваша форма была успешно отправлена!'); // Это покажет сообщение пользователю
+    }
+</script>
+
+<title>Обратная связь</title>
+</head>
+<body>
+<div class="container">
+    <form class="feedback-form">
+        <h2>Обратная связь</h2>
+        <input type="text" name="name" placeholder="Ваше имя" required>
+        <input type="email" name="email" placeholder="Ваш email" required>
+        <textarea name="message" placeholder="Ваше сообщение" required></textarea>
+        <button type="submit">Отправить</button>
+        <a href="/">Вернуться на главную</a>
+    </form>
+
+</body>
+
+</html>

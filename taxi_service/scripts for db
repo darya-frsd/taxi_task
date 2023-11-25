@@ -1,0 +1,22 @@
+INSERT INTO taxi_project_gender (gender_id, name)
+VALUES (1, 'Мужчина'), (2, 'Женщина'), (3, 'Другое');
+
+
+insert into taxi_project_driver (first_name, last_name, mobile_phone, rating, age, gender_id)
+values ('Василий', 'Пупкин', 89005553535, 7.8, 44, 1),
+       ('John', 'Doe', 89555675757, 7.8, 44, 1),
+       ('Пупк', 'Васильев', 88008008080, 7.9, 44, 1);
+
+INSERT INTO taxi_project_taxistatuses (description)
+VALUES  ('Ожидает вызова'), ('На вызове'), ('Не работает');
+
+INSERT INTO taxi_project_taxi (registration_number, model, year, taxi_type_id, driver_id, status_id)
+VALUES (123456, 'Адаптивный такси', 2020, 1, 1, 1),
+(123456, 'Автобус', 2020, 1, 1, 1),
+(123456, 'Групповой транспорт', 2020, 1, 1, 1)
+
+INSERT INTO User (description)
+
+
+
+

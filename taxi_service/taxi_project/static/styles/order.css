@@ -1,0 +1,172 @@
+/* Resetting default margin and font */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    height: 100vh;
+    color: #000000; /* Set default font color to black */
+}
+
+/* Container for the map and sidebar */
+#container {
+    position: relative;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* Map styling */
+#map {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+}
+
+/* Sidebar styling */
+.sidebar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 35%;
+    height: 100%;
+    background-color: #fff;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    z-index: 2;
+}
+
+/* Heading styles */
+.sidebar h2, .sidebar h4 {
+    color: #000000;
+}
+
+/* Timeline container styling */
+.timeline-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Timeline styling */
+.vehicle-timeline {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: relative;
+}
+
+/* Vehicle button styling */
+/* Vehicle button styling */
+.vehicle-button,
+.vehicle-type-button {
+    text-align: center;
+    color: #808080;
+    padding: 10px;
+    cursor: pointer;
+    transition: color 0.3s, border-bottom-color 0.3s; /* Add transition for color change on hover */
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+    margin-right: 20px;
+    border-bottom: 2px solid transparent; /* Add bottom underline */
+}
+
+/* Hover effect on vehicle button */
+.vehicle-button:hover,
+.vehicle-type-button:hover {
+    color: #003300;
+}
+
+/* Remove margin for the last button */
+.vehicle-button:last-child,
+.vehicle-type-button:last-child {
+    margin-right: 0;
+}
+
+/* Highlight effect on timeline dot */
+.timeline-dot.highlight {
+    background-color: #003300;
+}
+
+/* Remove margin for the last button */
+.vehicle-button:last-child {
+    margin-right: 0;
+}
+
+/* Styling for various fields and buttons */
+.address-fields,
+.amount-field,
+.order-button {
+    margin-top: 20px;
+}
+
+/* General styling for address and amount fields */
+.address-fields input,
+.amount-field input {
+    width: 100%;
+    margin: 10px;
+    font-weight: normal;
+    font-size: small;
+    text-align: left;
+    border: none;
+    border-bottom: 2px solid #ccc;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+/* Additional styling for destination and departure addresses */
+.address-fields #pickup_address,
+.address-fields #destination_address {
+    font-size: small;
+    font-weight: normal;
+    text-align: left;
+}
+
+/* Amount field styling */
+.amount-field input {
+    margin-top: 20px; /* Adjust margin for consistency */
+}
+
+/* Hover effect on the input fields */
+.address-fields input:hover,
+.amount-field input:hover {
+    border-bottom: 2px solid #003300;
+}
+
+/* Amount field button styling */
+.amount-field button,
+.order-button button {
+    z-index: 3;
+    background-color: #ccc; /* Set the default background color to gray */
+    border: none;
+    color: #000000; /* Set the text color to black */
+    cursor: pointer;
+    transition: background-color 0.3s; /* Add transition for background color change on hover */
+    border-radius: 5px; /* Add border-radius for rounded corners */
+    padding: 10px 20px; /* Adjust padding as needed */
+}
+
+/* Hover effect on the buttons */
+.amount-field button:hover,
+.order-button button:hover {
+    background-color: #808080; /* Change background color to dark gray on hover */
+}
+
+/* Remove border for the button */
+.amount-field button,
+.order-button button {
+    border: none;
+}
+
+/* Margin for the button */
+.amount-field button,
+.order-button button {
+    margin-top: 20px;
+}
+
+#amountOutput {
+    margin-top: 20px; /* Add some margin to separate it from the button */
+}

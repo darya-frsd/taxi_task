@@ -1,0 +1,48 @@
+* {
+    box-sizing: border-box;
+}
+
+.bar {
+    background-color: rgb(167, 233, 47);
+    width: 100%;
+    height: 50px;
+    display: flex;
+    list-style: none;
+    padding: 0;
+}
+
+.bar li {
+    height: 100%;
+    width: 150px;
+    border-right: 1px solid rgb(1, 106, 43);
+}
+
+.bar li a {
+    color: black;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.bar .has-dropdown ul li a {
+    padding: 12px 0;
+}
+
+.bar li a:hover {
+    background-color: white;
+}
+
+.bar li a.active {
+    background-color: white;
+    color: black; /* измените цвет текста на черный, чтобы он был виден на белом фоне */
+}
+
+.bar li.has-dropdown:hover .dropdown {
+    display: block;
+    background-color: white;
+}
+
+

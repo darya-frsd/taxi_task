@@ -1,0 +1,88 @@
+body, html {
+    font-family: Coolvetica, sans-serif;
+    background: #f7f8f7;
+    overflow-x: hidden;
+    scroll-behavior: smooth
+}
+
+
+a {
+    text-decoration: none;
+    color: #000000
+}
+
+p {
+    margin: 0
+}
+
+h1 {
+    font-size: 20px;
+    color: #fff;
+    font-weight: 600 !important
+}
+
+header {
+    background-color: #f2f2f2;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo10 {
+    width: 200px;
+    height: 100px;
+    cursor: pointer;
+}
+
+.navbar {
+    width: 100%;
+    display: flex;
+    list-style-image: initial;
+    list-style-type: none;
+    padding-top: 0px;
+}
+
+.bar_item {
+    font-size: 16px;
+    padding-top: 0px;
+    padding-right: 50px;
+    padding-bottom: 0px;
+    padding-left: 0px;
+    cursor: pointer;
+}
+
+.bar_item a:hover {
+    color: #016A2B;
+}
+
+
+.logout_but {
+    width: 150px;
+    height: 50px;
+    color: #000000;
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 2px;
+    border-color: #a7e92f;
+    border-radius: 16px;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    display: flex;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.logout_but:hover {
+    background-color: #a7e92f;
+    color: #fff;
+}
+
+
+button, input {
+    overflow: visible
+}
+
+button, select {
+    text-transform: none
+}

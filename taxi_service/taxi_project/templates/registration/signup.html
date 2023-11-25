@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+        {% load static %}
+    <link rel="stylesheet" href="{% static 'styles/signup.css' %}"> <!-- Путь к вашему CSS файлу -->
+</head>
+<body>
+    <div class="container">
+        <div class="login-form">
+            <h2>Регистрация</h2>
+            <form method="post" action="{% url 'signup' %}">
+    {% csrf_token %}
+    {{ form.username.label_tag }} {{ form.username }}
+    {{ form.password1.label_tag }} {{ form.password1 }}
+    {{ form.password2.label_tag }} {{ form.password2 }}
+
+                <button type="submit">Зарегистрироваться</button>
+            </form>
+            <p>Уже есть аккаунт? <a href="{% url 'login' %}">Войти</a></p>
+        </div>
+    </div>
+</body>
+</html>

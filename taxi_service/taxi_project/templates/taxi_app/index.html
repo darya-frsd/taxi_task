@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru">
+<style>
+        .half-screen-image {
+            width: 100%;
+            max-height: 100vh;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'styles/main_syle.css' %}"/>
+    <title>Inclusive Wheels</title>
+</head>
+<body>
+<header>
+    <div class="logo">
+        {% load static %}
+        <img src="{% static 'images/incl_heels.png' %}" aria-hidden="true" data-testid="utm-link"
+             class="logo10">
+    </div>
+    <nav>
+        <ul class="navbar">
+            <li class="bar_item"><a href="{% url 'order_page' %}" onclick="selectTab('taxi')">Такси</a></li>
+            <li class="bar_item"><a href="{% url 'equipment_page' %}"
+                                    onclick="selectTab('equipment')">Спецоборудование</a></li>
+            <li class="bar_item"><a href="{% url 'nutrition_page' %}" onclick="selectTab('nutrition')">Питание</a></li>
+            <li class="bar_item"><a href="{% url 'medicine_page' %}" onclick="selectTab('medications')">Аптека</a></li>
+            <li class="bar_item"><a href="{% url 'feedback' %}">Обратная связь</a></li>
+
+        </ul>
+    </nav>
+
+    <div>
+        <button class="logout_but" onclick="location.href='{% url 'logout' %}'">Выйти</button>
+    </div>
+
+
+</header>
+<main>
+    <img src="{% static 'styles/photo_2023-11-25_18-05-15.jpg' %}" alt="Car Image" class="half-screen-image">
+</main>
+<script>
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+body, html {
+    font-family: Coolvetica, sans-serif;
+    background: #f7f8f7;
+    overflow-x: hidden;
+    scroll-behavior: smooth
+}
+
+.side-menu {
+    position: fixed;
+    top: 0;
+    right: -250px;
+    width: 250px;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    overflow-y: auto;
+    transition: 0.5s;
+    padding-top: 50px;
+    z-index: 1;
+}
+
+.side-menu.show-menu {
+    right: 0;
+}
+
+.side-menu ul {
+    list-style: none;
+    padding: 0;
+}
+
+.side-menu a {
+    padding: 16px;
+    text-decoration: none;
+    font-size: 18px;
+    color: black;
+    display: block;
+    transition: 0.3s;
+    border-bottom: 1px solid #ccc;
+}
+
+.side-menu a:hover {
+    background-color: rgb(46, 60, 69);
+    color: white;
+}
+
+.side-menu .has-dropdown:hover .dropdown {
+    background-color: rgb(1, 106, 43, 0.8);
+    display: block;
+}
+
+.menu-toggle {
+    background-color: #2E3C45;
+    color: white;
+    border: 2px #2E3C45;
+
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    font-size: 36px;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.top-panel {
+    background-color: rgb(46, 60, 69);
+    padding: 10px;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* style.css */
+
+.top-panel-container {
+    background-color: rgb(46, 60, 69); /* Задайте цвет фона по вашему выбору */
+    color: white; /* Задайте цвет текста */
+    padding: 10px; /* Расстояние вокруг содержимого контейнера */
+    display: flex;
+    justify-content: space-between; /* Равномерное распределение элементов внутри контейнера */
+    align-items: center; /* Выравнивание элементов по центру вертикально */
+}
+
+.cart,
+.account {
+    margin: 0 20px;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    margin-left: 230px;
+}
+
+.rounded-search-input {
+    width: 600px;
+    padding: 10px;
+    border: none;
+    border-radius: 20px; /* Скругленные края */
+    background-color: rgba(255, 255, 255, 0.7); /* Полупрозрачный белый цвет */
+    margin-right: 10px; /* Отступ между поисковым полем и кнопкой (если есть) */
+    transition: background-color 0.3s; /* Плавное изменение цвета при наведении */
+}
+
+.rounded-search-input:hover {
+    background-color: rgba(255, 255, 255, 1); /* Полностью непрозрачный белый цвет при наведении */
+}
+
+.product button {
+    margin-top: 10px;
+    margin-right: 10px;
+    padding: 8px 15px;
+    background-color: rgb(1, 106, 43);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.product button:hover {
+    background-color: rgb(167, 233, 47);
+    color: white;
+}

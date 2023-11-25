@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Магазин спецоборудования</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'styles/style.css' %}"/>
+    <link rel="stylesheet" href="{% static 'styles/products.css' %}"/>
+    <link rel="stylesheet" href="{% static 'styles/menu.css' %}"/>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+<div class="top-panel-container">
+    <div class="top-panel">
+        <div class="cart">
+            <button onclick="window.location.href='{% url 'cart' %}'">
+                <img src="{% static 'images/court_icon.png' %}" alt="Корзина" width="40" height="30">
+            </button>
+        </div>
+        <div class="account">
+            <button onclick="window.location.href='{% url 'index' %}'">
+                <img src="{% static 'images/user_icon.png' %}" alt="На галвную" width="40" height="30">
+            </button>
+        </div>
+        <div class="search-bar">
+            <form action="{% url 'search_results' %}" method="GET">
+                <input type="text" name="q" placeholder="Поиск..." class="rounded-search-input">
+            </form>
+        </div>
+        <button class="menu-toggle">&#9776;</button>
+        <nav class="side-menu">
+            <ul class="bar-vertical">
+                <li><a href="{% url 'index' %}">Главная</a></li>
+                <li><a href="{% url 'order_page' %}" onclick="selectTab('taxi')">Такси</a></li>
+                <li class="has-dropdown">
+                    <a href="#" class="active">Заказ продуктов</a>
+                    <ul class="dropdown">
+                        <li><a href="{% url 'nutrition_page' %}" onclick="selectTab('nutrition')">Питание</a></li>
+                        <li><a href="{% url 'medicine_page' %}" onclick="selectTab('medications')">Аптека</a></li>
+                        <li><a href="#">Спецоборудование</a></li>
+                    </ul>
+                </li>
+                <li><a href="{% url 'feedback' %}">Обратная связь</a></li>
+                <li><a href="{% url 'logout' %}">Выйти</a></li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<h1>Каталог</h1>
+<div class="container">
+    <div class="product">
+        <img src="{% static 'images/product1.jpg' %}" alt="Продукт 1" width="200" height="200">
+        <h2>Коляска</h2>
+        <p>Стандартная медицинская коляска</p>
+        <p>Цена: $50</p>
+        <form action="{% url 'buy_product' product_id=8 %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Купить</button>
+        </form>
+        <form action="{% url 'rent_product' product_id=8 %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Арендовать</button>
+        </form>
+    </div>
+
+    <div class="product">
+        <img src="{% static 'images/product4.jpg' %}" alt="Продукт 2" width="200" height="200">
+        <h2>Тактил-Коммуникатор</h2>
+        <p>Коммуникатор со зрительной и тактильной обратной связью</p>
+        <p>Цена: $70</p>
+        <form action="{% url 'buy_product' product_id=7 %}" method="post">
+            {% csrf_token %}
+            <button type="submit">В корзину</button>
+        </form>
+        <form action="{% url 'rent_product' product_id=7 %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Арендовать</button>
+        </form>
+    </div>
+
+    <div class="product">
+        <img src="{% static 'images/product6.jpg' %}" alt="Продукт 3" width="200" height="200">
+        <h2>Трость-Стабилизатор</h2>
+        <p> Трость с дополнительной опорой </p>
+        <p>Цена: $70</p>
+        <form action="{% url 'buy_product' product_id=6 %}" method="post">
+            {% csrf_token %}
+            <button type="submit">В корзину</button>
+        </form>
+        <form action="{% url 'rent_product' product_id=6 %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Арендовать</button>
+        </form>
+    </div>
+
+    <div class="product">
+        <img src="{% static 'images/product8.jpg' %}" alt="Продукт 2" width="200" height="200">
+        <h2>Смарт-Дом</h2>
+        <p> Система управления "Умный дом"</p>
+        <p>Цена: $70</p>
+        <form action="{% url 'buy_product' product_id=5 %}" method="post">
+            {% csrf_token %}
+            <button type="submit">В корзину</button>
+        </form>
+        <form action="{% url 'rent_product' product_id=5 %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Арендовать</button>
+        </form>
+    </div>
+
+    <div class="product">
+        <img src="{% static 'images/product3.jpg' %}" alt="Продукт 2" width="200" height="200">
+        <h2>Cлухо-Ассистент</h2>
+        <p>Специальный слуховой аппарат</p>
+        <p>Цена: $70</p>
+        <form action="{% url 'buy_product' product_id=4 %}" method="post">
+            {% csrf_token %}
+            <button type="submit">В корзину</button>
+        </form>
+        <form action="{% url 'rent_product' product_id=4 %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Арендовать</button>
+        </form>
+    </div>
+
+    <div class="product">
+        <img src="{% static 'images/product7.jpg' %}" alt="Продукт 2" width="200" height="200">
+        <h2>Электро-Кровать</h2>
+        <p>Кровать с электрическим регулированием положения </p>
+        <p>Цена: $70</p>
+        <form action="{% url 'buy_product' product_id=3 %}" method="post">
+            {% csrf_token %}
+            <button type="submit">В корзину</button>
+        </form>
+        <form action="{% url 'rent_product' product_id=3 %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Арендовать</button>
+        </form>
+    </div>
+
+    <div class="product">
+        <img src="{% static 'images/product5.jpg' %}" alt="Продукт 2" width="200" height="200">
+        <h2>Аудио-Оцифровщик</h2>
+        <p>Текстовый оцифровщик с аудиовыходом</p>
+        <p>Цена: $70</p>
+        <form action="{% url 'buy_product' product_id=2 %}" method="post">
+            {% csrf_token %}
+            <button type="submit">В корзину</button>
+        </form>
+        <form action="{% url 'rent_product' product_id=2 %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Арендовать</button>
+        </form>
+    </div>
+
+    <div class="product">
+        <img src="{% static 'images/product2.jpg' %}" alt="Продукт 2" width="200" height="200">
+        <h2>Электро-Коляска</h2>
+        <p>Электрическая инвалидная коляска</p>
+        <p>Цена: $70</p>
+        <form action="{% url 'buy_product' product_id=1 %}" method="post">
+            {% csrf_token %}
+            <button type="submit">В корзину</button>
+        </form>
+        <form action="{% url 'rent_product' product_id=1 %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Арендовать</button>
+        </form>
+    </div>
+
+</div>
+
+<script>
+    // Ваш JavaScript код для страницы заказа
+    $(document).ready(function () {
+        $(".menu-toggle").click(function () {
+            $(".side-menu").toggleClass("show-menu");
+        });
+    });
+</script>
+</body>
+</html>

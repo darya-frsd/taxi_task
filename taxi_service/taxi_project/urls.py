@@ -1,0 +1,36 @@
+from django.urls import path
+from . import views
+from .views import CustomLoginView, CustomLogoutView, SignUpView, CustomSignupView
+
+urlpatterns = [
+    path('', views.index, name='index'),
+    path('login/', CustomLoginView.as_view(), name='login'),
+    path('logout/', views.logout_view, name='logout'),
+    path('logout_page/', views.logout_page, name='logout_page'),
+    path('signup/', CustomSignupView.as_view(), name='signup'),
+    path('feedback/', views.feedback, name='feedback'),
+    path('accounts/profile/', views.index, name='profile'),
+    path('save_profile/', views.save_profile, name='save_profile'),
+    path('profile/', views.profile, name='profile'),
+    path('order/', views.order_page, name='order_page'),
+    path('medicine/', views.medicine_page, name='medicine_page'),
+    path('equipment/', views.equipment_page, name='equipment_page'),
+    path('nutrition/', views.nutrition_page, name='nutrition_page'),
+    path('account/', views.account_page, name='account_page'),
+    path('pickup_submit/', views.pickup_submit, name='pickup_submit'),
+    path('destination_submit/', views.destination_submit, name='destination_submit'),
+    path('save_coordinates/', views.save_coordinates, name='save_coordinates'),
+    path('order_page/', views.order_page, name='order_page'),
+    path('get_matching_drivers/', views.get_matching_drivers, name='get_matching_drivers'),
+    path('save_trip_amount/', views.save_trip_amount, name='save_trip_amount'),
+    path('update_taxi_type/<int:taxi_id>/<int:taxi_type>/', views.update_taxi_type, name='update_taxi_type'),
+    path('last-trip-detail/', views.last_trip_detail, name='last_trip_detail'),
+    path('search/', views.search_results, name='search_results'),
+    path('cart/', views.cart, name='cart'),
+    path('account/', views.account, name='account'),
+    path('buy_product/<int:product_id>/', views.buy_product, name='buy_product'),
+    path('rent_product/<int:product_id>/', views.rent_product, name='rent_product'),
+    path('start_page/', views.start_page, name='start_page'),
+    path('get_cart_items/', views.get_cart_items, name='get_cart_items'),
+    path('delete_cart_item/', views.delete_cart_item, name='delete_cart_item'),
+]

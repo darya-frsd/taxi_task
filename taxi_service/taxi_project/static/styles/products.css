@@ -1,0 +1,39 @@
+/* styles/products.css */
+
+.container {
+    display: grid;
+    /* Автоматически заполняем на всю ширину grid-контейнера */
+    grid-template-columns: repeat(auto-fill, 250px);
+    width: 120%;
+    max-width: 1200px; /* Ширина grid-контейнера */
+    justify-content: center;
+    justify-items: center; /* Размещаем карточку по центру */
+    column-gap: 30px; /* Отступ между колонками */
+    row-gap: 40px; /* Отступ между рядами */
+    margin: 0 auto;
+}
+
+.product {
+    box-sizing: border-box;
+    position: relative;
+    transition: box-shadow 0.3s ease;
+    text-align: center; /* Выравниваем содержимое по центру */
+}
+
+.product img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+.product h2 {
+    margin-top: 10px;
+}
+
+.product p {
+    margin-top: 5px;
+}
+
+.product:hover {
+    box-shadow: 4px 8px 16px rgba(199, 73, 81, 0.2);
+}

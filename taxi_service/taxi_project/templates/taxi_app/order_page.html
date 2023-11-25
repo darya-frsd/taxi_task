@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Taxi</title>
+    <!-- Подключение Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'styles/order.css' %}"/>
+</head>
+<body>
+<div class="body-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="top-right-container">
+            <button onclick="window.location.href='{% url 'index' %}'">Главное меню</button>
+            <button onclick="window.location.href='{% url 'account_page' %}'">Мой профиль</button>
+        </div>
+
+        <div class="address-fields">
+            <h4><i class="fas fa-map-marker-alt"></i> Откуда</h4>
+            <label for="pickup_address"></label>
+            <input type="text" id="pickup_address" name="pickup_address" required
+                   placeholder="Адрес отправления"
+                   onblur="updateButtonText('vehicleBtn1', this.value); geocodeAndAddMarker('pickup_address', 'pickup'); calculateRouteIfAddressesSet();">
+
+            <h4><i class="fas fa-map-marker-alt"></i> Куда </h4>
+            <label for="destination_address"></label>
+            <input type="text" id="destination_address" name="destination_address" required
+                   placeholder="Адрес назначения"
+                   onblur="updateButtonText('vehicleBtn2', this.value); geocodeAndAddMarker('destination_address', 'destination'); calculateRouteIfAddressesSet();">
+        </div>
+
+        <!-- Amount field styling -->
+        <div class="amount-field">
+            <h4><i class="fas fa-money-bill"></i> Стоимость поездки:</h4>
+            <div class="amount-container">
+                <label for="amount"></label>
+                <input type="text" id="amount" name="amount" required placeholder="Ожидаемая стоимость">
+            </div>
+            <button type="button" onclick="validateAndSubmit()">Подтвердить стоимость</button>
+        </div>
+        <div id="amountOutput"></div>
+        <h2>Выберите тип транспорта:</h2>
+        <div class="timeline-container">
+            <div class="vehicle-timeline">
+                <div class="vehicle-button" data-index="1" onmouseover="highlightTimelineDot(1)"
+                     onmouseout="resetTimelineDot(1)">
+                    <a href="#" onclick="selectVehicleType(1)">
+                        <span>Адаптивный</span>
+                        <div class="timeline-dot" data-index="1"></div>
+                    </a>
+                </div>
+                <div class="vehicle-button" data-index="2" onmouseover="highlightTimelineDot(2)"
+                     onmouseout="resetTimelineDot(2)">
+                    <a href="#" onclick="selectVehicleType(2)">
+                        <span>Автобус</span>
+                        <div class="timeline-dot" data-index="2"></div>
+                    </a>
+                </div>
+                <div class="vehicle-button" data-index="3" onmouseover="highlightTimelineDot(3)"
+                     onmouseout="resetTimelineDot(3)">
+                    <a href="#" onclick="selectVehicleType(3)">
+                        <span>Групповой</span>
+                        <div class="timeline-dot" data-index="3"></div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="order-button">
+            <button type="button" id="makeOrderBtn" onclick="makeOrder()">Сделать заказ</button>
+        </div>
+        <div id="driverInfoContainer"></div>
+    </div>
+
+    <!-- Map -->
+    <div id="map" class="map-container"></div>
+</div>
+
+<!-- Подключение Leaflet и OpenRouteService скриптов -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+
+<script>
+    function highlightTimelineDot(index) {
+        var dot = document.querySelector('.timeline-dot[data-index="' + index + '"]');
+        if (dot) {
+            dot.style.backgroundColor = '#003300'; // Set the desired highlight color
+        }
+    }
+
+    function resetTimelineDot(index) {
+        var dot = document.querySelector('.timeline-dot[data-index="' + index + '"]');
+        if (dot) {
+            dot.style.backgroundColor = '#ccc'; // Reset to the original color
+        }
+    }
+</script>
+
+
+<script>
+    function updateButtonText(buttonId, address) {
+        const button = document.getElementById(buttonId);
+        if (button) {
+            button.textContent = address || 'Выберите тип транспорта'; // Use a default text if address is empty
+        }
+    }
+</script>
+
+<!-- Ваш пользовательский JavaScript -->
+<script>
+    var map = L.map('map').setView([43.2551, 76.9126], 13);
+    var routeLayer; // Переменная для хранения слоя маршрута на карте
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    function calculateShortestPath() {
+        var pickupAddress = document.getElementById('pickup_address').value;
+        var destinationAddress = document.getElementById('destination_address').value;
+
+        // Geocode the addresses to get coordinates
+        pickupAddress = geocode(pickupAddress);
+        destinationAddress = geocode(destinationAddress);
+
+        Promise.all([pickupAddress, destinationAddress])
+            .then(function (results) {
+                var pickupCoordinates = results[0];
+                var destinationCoordinates = results[1];
+
+                console.log('Координаты отправления:', pickupCoordinates);
+                console.log('Координаты назначения:', destinationCoordinates);
+
+                if (!pickupCoordinates || !destinationCoordinates) {
+                    console.error('Введите адреса отправления и назначения.');
+                    return;
+                }
+
+                // Create a routing control and add it to the map
+                if (routeLayer) {
+                    map.removeLayer(routeLayer);
+                }
+
+                var control = L.Routing.control({
+                    waypoints: [
+                        L.latLng(pickupCoordinates[0], pickupCoordinates[1]),
+                        L.latLng(destinationCoordinates[0], destinationCoordinates[1])
+                    ],
+                    routeWhileDragging: true
+                }).addTo(map);
+
+                // Listen for the 'routesfound' event
+                control.on('routesfound', function (event) {
+                    var routes = event.routes;
+                    if (routes && routes.length > 0) {
+                        var totalTime = routes[0].summary.totalTime; // Total time in seconds
+                        console.log('Время в поездке (в секундах):', totalTime);
+
+                        // You can convert totalTime to minutes, hours, etc. based on your requirements
+                        var totalTimeInMinutes = totalTime / 60;
+                        console.log('Время в поездке (в минутах):', totalTimeInMinutes);
+
+                        // Store the time in a separate variable or perform any other actions with it
+                        // For example, you can store it in a global variable or update a UI element
+                    }
+                });
+            })
+            .catch(function (error) {
+                console.error('Ошибка во время геокодирования:', error);
+            });
+    }
+
+
+
+    function calculateRouteIfAddressesSet() {
+        var pickupAddress = document.getElementById('pickup_address').value;
+        var destinationAddress = document.getElementById('destination_address').value;
+
+        if (pickupAddress && destinationAddress) {
+            calculateShortestPath();
+        }
+    }
+
+    function geocodeAndAddMarker(addressId, addressType) {
+        var address = document.getElementById(addressId).value;
+
+        console.log(`Геокодирование адреса ${addressType}: ${address}`);
+
+        return geocode(address)
+            .then(coordinates => {
+                if (coordinates) {
+                    var marker = L.marker(coordinates).addTo(map);
+                    marker.bindPopup(address).openPopup();
+
+                    map.panTo(coordinates);
+
+                    sendCoordinatesToServer(addressType, coordinates);
+
+                    console.log(`Координаты ${addressType}:`, coordinates);
+                    console.log(`Маркер ${addressType} успешно добавлен на карту.`);
+
+                    return coordinates;
+                } else {
+                    console.error('Геокодирование не удалось для адреса:', address);
+                    return null;
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка во время геокодирования:', error);
+                return null;
+            });
+    }
+
+    function sendCoordinatesToServer(addressType, coordinates) {
+        var location = document.getElementById(addressType + '_address').value;
+
+        var data = {
+            location: location,
+            coordinates: coordinates
+        };
+
+        fetch('/save_coordinates/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+            body: JSON.stringify(data),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(`Координаты ${addressType} успешно отправлены на сервер:`, data);
+        })
+        .catch(error => {
+            console.error(`Ошибка при отправке координат ${addressType} на сервер:`, error);
+        });
+    }
+
+    function geocode(address) {
+        var apiUrl = 'https://nominatim.openstreetmap.org/search';
+        var format = 'json';
+
+        var requestUrl = `${apiUrl}?format=${format}&q=${encodeURIComponent(address)}`;
+
+        return fetch(requestUrl)
+            .then(response => response.json())
+            .then(data => {
+                if (data.length > 0) {
+                    var latitude = parseFloat(data[0].lat);
+                    var longitude = parseFloat(data[0].lon);
+                    return [latitude, longitude];
+                } else {
+                    console.error('Геокодирование не удалось. Нет результатов.');
+                    return null;
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка во время геокодирования:', error);
+                return null;
+            });
+    }
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+
+
+<script>
+    var selectedVehicleType = null;
+
+    function selectVehicleType(taxiType) {
+        const taxiId = 1;
+        fetch(`/update_taxi_type/${taxiId}/${taxiType}/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    selectedVehicleType = taxiType;
+                    document.getElementById('makeOrderBtn').disabled = false;
+
+                    setVehicleTypeColor(taxiType);
+                }
+                else {
+                    alert('Произошла ошибка при обновлении типа такси: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка при отправке запроса:', error);
+            });
+    }
+
+    function setVehicleTypeColor(taxiType) {
+        const vehicleButtons = document.querySelectorAll('.vehicle-button');
+
+        vehicleButtons.forEach(button => {
+            button.style.backgroundColor = '';
+        });
+
+        const selectedButton = document.querySelector(`.vehicle-button[data-index="${taxiType}"]`);
+        selectedButton.style.backgroundColor = 'lightblue';
+    }
+
+
+    var options = {
+        dog_guide: false,
+        baby_carriage: false,
+        driver_accompaniment: false
+    };
+
+    function updateOption(option) {
+        options[option] = !options[option];
+    }
+
+function makeOrder() {
+        if (selectedVehicleType === null) {
+            alert('Выберите тип транспорта перед оформлением заказа.');
+            return;
+        }
+
+        var dogGuideOption = options.dog_guide;
+        var babyCarriageOption = options.baby_carriage;
+        var driverAccompanimentOption = options.driver_accompaniment;
+
+        console.log('Dog Guide Option:', dogGuideOption);
+        console.log('Baby Carriage Option:', babyCarriageOption);
+        console.log('Driver Accompaniment Option:', driverAccompanimentOption);
+
+        const requestData = {
+            user_address: 'здесь_ваш_адрес',
+            car_model: 'здесь_ваша_модель',
+            selected_vehicle_type: selectedVehicleType,
+            dog_guide: dogGuideOption,
+            baby_carriage: babyCarriageOption,
+            driver_accompaniment: driverAccompanimentOption
+        };
+
+        fetch('/get_matching_drivers/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+            body: JSON.stringify(requestData),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Список водителей:', data);
+
+            const selectedDriver = data[0];
+            console.log(selectedDriver);
+
+            const driverInfoContainer = document.getElementById('driverInfoContainer');
+
+            const driverInfoHTML = `
+                <h2>Заказ подтвержден. Информация о водителе: </h2>
+                <p>Имя: ${data.name}</p>
+                <p>Автомобиль: ${data.carNumber}</p>
+
+            `;
+            driverInfoContainer.innerHTML = driverInfoHTML;
+        })
+        .catch(error => {
+            console.error('Ошибка при выполнении запроса:', error);
+        });
+    }
+
+    // Функция для получения CSRF-токена из cookie
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+</script>
+
+
+<!-- Ваш JavaScript-код должен идти внизу перед </body> -->
+<script>
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    function validateAndSubmit() {
+        var amountInput = document.getElementById('amount');
+        var amountOutput = document.getElementById('amountOutput');
+
+        if (!amountInput || !amountOutput) {
+            console.error('Element not found.');
+            return;
+        }
+
+        var amount = amountInput.value;
+
+        if (!isNaN(amount)) {
+            amountOutput.innerHTML = 'Ждем ответа от водителя...';
+
+
+            setTimeout(function() {
+                amountOutput.innerHTML = 'Стоимость поездки: ' + amount + ' тг.';
+            }, 2000);
+
+
+            var xhr = new XMLHttpRequest();
+            var url = '/save_trip_amount/';
+
+            xhr.open('POST', url, true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+            var csrftoken = getCookie('csrftoken');
+            xhr.setRequestHeader('X-CSRFToken', csrftoken);
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        var response = JSON.parse(xhr.responseText);
+                        if (response.success) {
+                            console.log('Amount', amount);
+                        } else {
+                            alert('Failed to save amount: ' + response.error);
+                        }
+                    } else {
+                        alert('HTTP error: ' + xhr.status);
+                    }
+                }
+            };
+
+            xhr.send('amount=' + amount);
+        } else {
+            alert('Please enter a valid number for the amount.');
+        }
+
+
+
+    }
+</script>
+
+</body>
+</html>
